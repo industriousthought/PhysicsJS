@@ -32,13 +32,52 @@
             },
 
             animate: function() {
-                console.log('animate');
+                var ctx, w, h, makeTexture;
+
+                makeTexture = function(c) {
+                    c.drawImage(this.view, 0, 0, this.view.width, this.view.height);
+                    this.view = document.createElement('canvas');
+                    this.view.width = this.texture.width / this.texMap.x;
+                    this.view.height = this.texture.height / this.texMap.y;
+
+                };
+
                 if (this.view) {
                     if (this.texture) {
-                        
+                        if (this.view.getContext) {
+                            if (this.texMap.tick < 15) {
+                                this.texMap.tick += 1;
+                            } else {
+                                if (this.texMap.frame < this.texMap.x) {
+                                    this.texMap.frame += 1;
+                                } else {
+                                    this.texMap.frame = 0;
+                                }
+                                this.texMap.tick = 0;
+                                w = this.texture.width / this.texMap.x;
+                                h = this.texture.height / this.texMap.y;
+                                ctx = this.view.getContext("2d");
+                                this.view.width = this.view.width;
 
+                        
+                                ctx.drawImage(this.texture,
+                                    this.texMap.frame * w, 
+                                    this.texMap.activity * h,
+                                    w,
+                                    h,
+                                    0, 
+                                    0,
+                                    w,
+                                    h);
+                            }
+                        }
                     } else {
-                        this.texture = this.view;
+                        this.texture = document.createElement('canvas');
+                        ctx = this.texture.getContext("2d");
+                        this.texture.height = this.view.height;
+                        this.texture.width = this.view.width;
+                        this.texMap.tick = 0;
+                        this.view.onload = makeTexture.bind(this, ctx);
                     }
                 }
 
