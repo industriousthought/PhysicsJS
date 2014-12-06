@@ -37,25 +37,26 @@
                 makeTexture = function(c) {
                     c.drawImage(this.view, 0, 0, this.view.width, this.view.height);
                     this.view = document.createElement('canvas');
-                    this.view.width = this.texture.width / this.texMap.x;
+                    this.view.width = this.texture.width / Math.max.apply(0, this.texMap.x);
                     this.view.height = this.texture.height / this.texMap.y;
+
 
                 };
 
                 if (this.view) {
                     if (this.texture) {
                         if (this.view.getContext) {
-                            if (this.texMap.tick < 15) {
+                            if (this.texMap.tick < 10) {
                                 this.texMap.tick += 1;
                             } else {
-                                if (this.texMap.frame < this.texMap.x) {
+                                w = this.view.width;
+                                h = this.view.height;
+                                if (this.texMap.frame < this.texMap.x[this.texMap.activity] - 1) {
                                     this.texMap.frame += 1;
                                 } else {
                                     this.texMap.frame = 0;
                                 }
                                 this.texMap.tick = 0;
-                                w = this.texture.width / this.texMap.x;
-                                h = this.texture.height / this.texMap.y;
                                 ctx = this.view.getContext("2d");
                                 this.view.width = this.view.width;
 
@@ -67,8 +68,8 @@
                                     h,
                                     0, 
                                     0,
-                                    w,
-                                    h);
+                                    w * this.texMap.scaler,
+                                    h * this.texMap.scaler);
                             }
                         }
                     } else {
