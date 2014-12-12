@@ -601,6 +601,9 @@ Physics.renderer('canvas', function( proto ){
             // must want an image
             if ( styles.src ){
                 view = new Image();
+                view.addEventListener('load', function() {
+                    console.log('load');
+                });
                 view.src = styles.src;
                 if ( styles.width ){
                     view.width = styles.width;

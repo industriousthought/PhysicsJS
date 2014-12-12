@@ -28,6 +28,8 @@
             init: function( options ){
 
                 parent.init.call(this, options);
+                
+                console.log(this.view);
 
             },
 
