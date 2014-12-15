@@ -346,6 +346,7 @@ Physics.renderer('canvas', function( proto ){
                     ,i
                     ,l = bodies.length
                     ,stack = (l || layer.id !== 'main') ? bodies : self._world._bodies
+                    ,t = 1//unsure what this should be set to. InterploateTime?
                     ;
 
                 if ( layer.options.manual ){
@@ -362,6 +363,7 @@ Physics.renderer('canvas', function( proto ){
                 }
 
                 if ( layer.options.follow ){
+                    offset.ang = layer.options.follow.state.angular.pos;
                     offset.vsub( layer.options.follow.state.pos );
                     offset.sub( layer.options.follow.state.vel.get(0)*t, layer.options.follow.state.vel.get(1)*t );
                 }
@@ -379,7 +381,8 @@ Physics.renderer('canvas', function( proto ){
 
                     body = stack[ i ];
                     if ( !body.hidden ){
-                        view = body.view || ( body.view = self.createView(body.geometry, body.styles || styles[ body.geometry.name ]) );
+                    
+                        view = body.view || ( body.view = self.createView(body.geometry, body.styles || styles[ body.geometry.name ], body) );
                         self.drawBody( body, body.view, layer.ctx, offset );
                     }
                 }
@@ -583,7 +586,7 @@ Physics.renderer('canvas', function( proto ){
         },
 
         // extended
-        createView: function( geometry, styles ){
+        createView: function( geometry, styles, body ){
 
             var view
                 ,aabb = geometry.aabb()
@@ -603,51 +606,55 @@ Physics.renderer('canvas', function( proto ){
                 view = new Image();
                 view.addEventListener('load', function() {
 
-                    var texture, w, h, makeTexture, tick, view;
+                    var texture, w, h, makeTexture, tick, ctx, frame;
 
-                    if (this.options.texMap) {{
-                        this.texture = document.createElement('canvas');
-                        texture = this.texture.getContext("2d");
-                        this.texture.height = this.view.height;
-                        this.texture.width = this.view.width;
+                    if (styles.texMap) {
+                    console.log(body);
+                        texture = document.createElement('canvas');
+                        ctx = texture.getContext("2d");
+                        texture.height = view.height;
+                        texture.width = view.width;
                         tick = 0;
-                        texture.drawImage(this.view, 0, 0, this.view.width, this.view.height);
-                        this.view = document.createElement('canvas');
-                        this.view.width = this.texture.width / Math.max.apply(0, this.texMap.x);
-                        this.view.height = this.texture.height / this.texMap.y;
-                        view = this.view.getContext("2d");
+                        frame = 0;
+                        ctx.drawImage(view, 0, 0, view.width, view.height);
+                        body.view = document.createElement('canvas');
+                        body.view.width = texture.width / Math.max.apply(0, styles.texMap.x);
+                        body.view.height = texture.height / styles.texMap.y;
+                        ctx = body.view.getContext("2d");
 
+                    console.log(body.view);
 
 
                     
-                        this.on('animateSprite', function() {
+                        this._world.on('step', function() {
 
+                            
 
                             if (tick < 10) {
                                 tick += 1;
                             } else {
-                                w = this.view.width;
-                                h = this.view.height;
-                                if (this.texMap.frame < this.texMap.x[this.texMap.activity] - 1) {
-                                    this.texMap.frame += 1;
+                                w = body.view.width;
+                                h = body.view.height;
+                                if (frame < styles.texMap.x[styles.texMap.activity] - 1) {
+                                    frame += 1;
                                 } else {
-                                    this.texMap.frame = 0;
+                                    frame = 0;
                                 }
                                 tick = 0;
-                                this.view.width = this.view.width;
+                                body.view.width = body.view.width;
 
                         
-                                view.drawImage(this.texture,
-                                    this.texMap.frame * w, 
-                                    this.texMap.activity * h,
+                                ctx.drawImage(texture,
+                                    frame * w, 
+                                    styles.texMap.activity * h,
                                     w,
                                     h,
                                     0, 
                                     0,
-                                    w * this.texMap.scaler,
-                                    h * this.texMap.scaler);
+                                    w * styles.texMap.scaler,
+                                    h * styles.texMap.scaler);
                             }
-                        }
+                        });
                     }
 
                 }.bind(this));
@@ -724,15 +731,18 @@ Physics.renderer('canvas', function( proto ){
             ctx = ctx || this.ctx;
 
             // interpolate positions
-            x = pos.x + offset.x + v.x * t;
-            y = pos.y + offset.y + v.y * t;
+            x = pos.x + /*offset.x +*/ v.x * t;
+            y = pos.y + /*offset.y +*/ v.y * t;
             ang = body.state.angular.pos + body.state.angular.vel * t;
 
             ctx.save();
             ctx.translate( x, y );
             ctx.rotate( ang );
+            ctx.translate( offset.x, offset.y );
+            ctx.rotate( offset.ang );
             ctx.drawImage(view, -view.width/2, -view.height/2, view.width, view.height);
             ctx.restore();
+
 
             if ( this.options.debug ){
                 aabb = body.aabb();
