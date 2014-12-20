@@ -609,7 +609,6 @@ Physics.renderer('canvas', function( proto ){
                     var texture, w, h, makeTexture, tick, ctx, frame;
 
                     if (styles.texMap) {
-                    console.log(body);
                         texture = document.createElement('canvas');
                         ctx = texture.getContext("2d");
                         texture.height = view.height;
@@ -651,8 +650,8 @@ Physics.renderer('canvas', function( proto ){
                                     h,
                                     0, 
                                     0,
-                                    w * styles.texMap.scaler,
-                                    h * styles.texMap.scaler);
+                                    w,
+                                    h);
                             }
                         });
                     }
@@ -731,15 +730,16 @@ Physics.renderer('canvas', function( proto ){
             ctx = ctx || this.ctx;
 
             // interpolate positions
-            x = pos.x + /*offset.x +*/ v.x * t;
-            y = pos.y + /*offset.y +*/ v.y * t;
+            x = pos.x + offset.x + v.x * t;
+            y = pos.y + offset.y + v.y * t;
             ang = body.state.angular.pos + body.state.angular.vel * t;
 
             ctx.save();
             ctx.translate( x, y );
             ctx.rotate( ang );
-            ctx.translate( offset.x, offset.y );
-            ctx.rotate( offset.ang );
+            //ctx.translate( offset.x + view.width/2, offset.y + view.height/2);
+            //ctx.rotate( offset.ang );
+            //ctx.translate( - (offset.x + view.width/2), - (offset.y + view.height/2) );
             ctx.drawImage(view, -view.width/2, -view.height/2, view.width, view.height);
             ctx.restore();
 
