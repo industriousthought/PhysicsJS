@@ -621,15 +621,13 @@ Physics.renderer('canvas', function( proto ){
                         body.view.height = texture.height / styles.texMap.y;
                         ctx = body.view.getContext("2d");
 
-                    console.log(body.view);
-
-
                     
                         this._world.on('step', function() {
 
+                            var tock = 15 - Math.sqrt(Math.pow(body.state.vel.get(0), 2) + Math.pow(body.state.vel.get(1), 2)) * 15;
                             
 
-                            if (tick < 10) {
+                            if (tick < tock) {
                                 tick += 1;
                             } else {
                                 w = body.view.width;
