@@ -22,6 +22,7 @@ Physics.behavior('zombie', function( parent ){
             this.options( options );
 
 
+            this.zombies = options.zombies;
             this.follow = options.follow;
         },
 
@@ -29,10 +30,22 @@ Physics.behavior('zombie', function( parent ){
         // extended
         behave: function( data ){
             var follow = this.follow,
-                x = follow.state.pos.get(0) - this.state.pos.get(0),
-                y = follow.state.pos.get(1) - this.state.pos.get(1);
-    
-                this.state.angular.pos = Math.atan(x/y);
+                zombies = this.zombies.list(),
+                speed = .01,
+                i,
+                ang,
+                x,
+                y;
+
+            for (i = 0; i < zombies.length; i++) {
+                x = follow.state.pos.get(0) - zombies[i].state.pos.get(0);
+                y = follow.state.pos.get(1) - zombies[i].state.pos.get(1);
+                ang = Math.atan2(y, x);
+                zombies[i].state.angular.pos = ang;
+
+                zombies[i].state.acc.set( Math.cos(ang) * speed, Math.sin(ang) * speed );
+
+            }
         }
     };
 });
