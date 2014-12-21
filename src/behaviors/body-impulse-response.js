@@ -141,21 +141,21 @@ Physics.behavior('body-impulse-response', function( parent ){
 
                 // apply impulse
                 bodyB.state.vel.vadd( n.mult( impulse * invMassB ) );
-                bodyB.state.angular.vel -= impulse * invMoiB * rBreg;
+                //bodyB.state.angular.vel -= impulse * invMoiB * rBreg;
 
             } else if ( fixedB ){
 
                 // apply impulse
                 bodyA.state.vel.vsub( n.mult( impulse * invMassA ) );
-                bodyA.state.angular.vel += impulse * invMoiA * rAreg;
+                //bodyA.state.angular.vel += impulse * invMoiA * rAreg;
 
             } else {
 
                 // apply impulse
                 bodyB.state.vel.vadd( n.mult( impulse * invMassB ) );
-                bodyB.state.angular.vel -= impulse * invMoiB * rBreg;
+                //bodyB.state.angular.vel -= impulse * invMoiB * rBreg;
                 bodyA.state.vel.vsub( n.mult( invMassA * bodyB.mass ) );
-                bodyA.state.angular.vel += impulse * invMoiA * rAreg;
+                //bodyA.state.angular.vel += impulse * invMoiA * rAreg;
             }
 
             // inContact = (impulse < 0.004);
@@ -195,21 +195,21 @@ Physics.behavior('body-impulse-response', function( parent ){
 
                     // apply frictional impulse
                     bodyB.state.vel.vsub( perp.mult( impulse * invMassB ) );
-                    bodyB.state.angular.vel -= impulse * invMoiB * rBproj;
+                    //bodyB.state.angular.vel -= impulse * invMoiB * rBproj;
 
                 } else if ( fixedB ){
 
                     // apply frictional impulse
                     bodyA.state.vel.vadd( perp.mult( impulse * invMassA ) );
-                    bodyA.state.angular.vel += impulse * invMoiA * rAproj;
+                    //bodyA.state.angular.vel += impulse * invMoiA * rAproj;
 
                 } else {
 
                     // apply frictional impulse
                     bodyB.state.vel.vsub( perp.mult( impulse * invMassB ) );
-                    bodyB.state.angular.vel -= impulse * invMoiB * rBproj;
+                    //bodyB.state.angular.vel -= impulse * invMoiB * rBproj;
                     bodyA.state.vel.vadd( perp.mult( invMassA * bodyB.mass ) );
-                    bodyA.state.angular.vel += impulse * invMoiA * rAproj;
+                    //bodyA.state.angular.vel += impulse * invMoiA * rAproj;
                 }
             }
 
