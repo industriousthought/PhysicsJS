@@ -61,7 +61,7 @@ Physics.behavior('body-impulse-response', function( parent ){
                 ;
 
             // do nothing if both are fixed
-            if ( fixedA && fixedB ){
+            if ( ( fixedA && fixedB ) || ( bodyA.background === true || bodyA.background === true ) ){
                 scratch.done();
                 return;
             }
