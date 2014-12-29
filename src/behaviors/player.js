@@ -25,8 +25,11 @@ Physics.behavior('player', function( parent ){
                     if (e.button === 2) {
                         oldX = e.screenX;
                         document.addEventListener('mousemove', mouseMove, false);
-                        document.addEventListener('mouseup', mouseUp, false);
+                    } else if (e.button === 0) {
+                        player.shooting = 2;
+
                     }
+                    document.addEventListener('mouseup', mouseUp, false);
                 },
 
                 mouseMove = function(e) {
@@ -37,13 +40,15 @@ Physics.behavior('player', function( parent ){
                     if (e.button === 2) {
                         document.removeEventListener('mousemove', mouseMove, false);
                         document.removeEventListener('mouseup', mouseUp, false);
+                    } else if (e.button === 0) {
+                        player.shooting = false;
+
                     }
                 },
 
                 keyUp = function(e) {
                     var i = keysPressed.indexOf(e.keyCode);
                     if (i !== -1) {
-                        console.log('removd ' + e.keyCode);
                         keysPressed.splice(i, 1);
                     }
                     
@@ -51,7 +56,6 @@ Physics.behavior('player', function( parent ){
 
                 keyDown = function(e) {
                     if (keysPressed.indexOf(e.keyCode) === -1) {
-                        console.log('added' + e.keyCode);
                         keysPressed.push(e.keyCode);
                     }
                 },
@@ -60,7 +64,6 @@ Physics.behavior('player', function( parent ){
         
                 keysPressed = [];
 
-            
 
             document.addEventListener("contextmenu", function(e){
                 e.preventDefault();
@@ -78,8 +81,23 @@ Physics.behavior('player', function( parent ){
         // extended
         behave: function( data ){
             var ang = this.player.state.angular.pos,
-                speed = 0.1;//this.player.speed;
-
+                player = this.player,
+                speed;
+            
+            if (player.shooting) {
+                if (player.shooting <= 1) {
+                    player.shoot();
+                    player.shooting = 20;
+                } else {
+                    player.shooting--;
+                }
+            }
+            
+            if (this.keysPressed.indexOf(16) !== -1 && !player.shooting) {
+                speed = 0.1;
+            } else {
+                speed = 0.05;
+            }
             if (this.keysPressed.indexOf(87) !== -1) {
                 this.player.state.acc.set( Math.cos(ang) * speed, Math.sin(ang) * speed );
             }
