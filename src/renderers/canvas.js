@@ -102,6 +102,7 @@ Physics.renderer('canvas', function( proto ){
 
             var self = this;
 
+            window.canvas = this;
             // call proto init
             proto.init.call(this, options);
 
@@ -132,6 +133,11 @@ Physics.renderer('canvas', function( proto ){
                 this.el = viewport;
             }
 
+            //this.rotatedCanvas = document.getElementById('rotatedCanvas');
+            //this.rotatedCanvas.width = viewport.width;
+            //this.rotatedCanvas.height = viewport.height;
+
+            //viewport.style.visibility = 'hidden';
             this.ctx = viewport.getContext('2d');
 
             this.els = {};
@@ -363,6 +369,7 @@ Physics.renderer('canvas', function( proto ){
                 }
 
                 if ( layer.options.follow ){
+
                     offset.ang = layer.options.follow.state.angular.pos;
                     offset.vsub( layer.options.follow.state.pos );
                     offset.sub( layer.options.follow.state.vel.get(0)*t, layer.options.follow.state.vel.get(1)*t );
@@ -735,9 +742,9 @@ Physics.renderer('canvas', function( proto ){
             ctx.save();
             ctx.translate( x, y );
             ctx.rotate( ang );
-            //ctx.translate( offset.x + view.width/2, offset.y + view.height/2);
-            //ctx.rotate( offset.ang );
-            //ctx.translate( - (offset.x + view.width/2), - (offset.y + view.height/2) );
+            ctx.translate(500 - (pos.x + offset.x), 900 - ( pos.y + offset.y));
+            ctx.rotate(offset.ang);
+            ctx.translate(-500 + (pos.x + offset.x), -900 + ( pos.y + offset.y));
             ctx.drawImage(view, -view.width/2, -view.height/2, view.width, view.height);
             ctx.restore();
 
@@ -752,6 +759,7 @@ Physics.renderer('canvas', function( proto ){
                 ctx.save();
                 ctx.translate(pos.x + offset.x, pos.y + offset.y);
                 ctx.rotate(body.state.angular.pos);
+                
                 ctx.drawImage(body._debugView, -body._debugView.width * 0.5, -body._debugView.height * 0.5);
                 ctx.restore();
             }
@@ -761,7 +769,8 @@ Physics.renderer('canvas', function( proto ){
         render: function( bodies, meta ){
 
             var body
-                ,view
+                ,view = this.el
+                //,ctx  = this.rotatedCanvas.getContext('2d')
                 ,pos
                 ;
 
@@ -781,6 +790,14 @@ Physics.renderer('canvas', function( proto ){
                 this._layers[ id ].render();
             }
 
+            //this.rotatedCanvas.width = this.rotatedCanvas.width;
+            //ctx.save();
+            //ctx.translate(1000, 1400);
+            //ctx.rotate(this.cameraAngle);
+            //ctx.translate(-1000, -1400);
+            //ctx.drawImage(view, 0, 0);
+            //ctx.restore();
+            
             return this;
         }
     };
