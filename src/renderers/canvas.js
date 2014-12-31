@@ -133,11 +133,6 @@ Physics.renderer('canvas', function( proto ){
                 this.el = viewport;
             }
 
-            //this.rotatedCanvas = document.getElementById('rotatedCanvas');
-            //this.rotatedCanvas.width = viewport.width;
-            //this.rotatedCanvas.height = viewport.height;
-
-            //viewport.style.visibility = 'hidden';
             this.ctx = viewport.getContext('2d');
 
             this.els = {};
@@ -790,14 +785,6 @@ Physics.renderer('canvas', function( proto ){
                 this._layers[ id ].render();
             }
 
-            //this.rotatedCanvas.width = this.rotatedCanvas.width;
-            //ctx.save();
-            //ctx.translate(1000, 1400);
-            //ctx.rotate(this.cameraAngle);
-            //ctx.translate(-1000, -1400);
-            //ctx.drawImage(view, 0, 0);
-            //ctx.restore();
-            
             return this;
         }
     };
