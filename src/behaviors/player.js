@@ -33,11 +33,13 @@ Physics.behavior('player', function( parent ){
                 },
 
                 mouseMove = function(e) {
-                    player.state.angular.pos = (e.screenX - oldX) / 50;
+                    mouseOffset.x = (e.screenX - oldX) / 500;
+                    //player.state.angular.pos = (e.screenX - oldX) / 100;
                 },
 
                 mouseUp = function(e) { 
                     if (e.button === 2) {
+                        mouseOffset.x = 0;
                         document.removeEventListener('mousemove', mouseMove, false);
                         document.removeEventListener('mouseup', mouseUp, false);
                     } else if (e.button === 0) {
@@ -61,6 +63,8 @@ Physics.behavior('player', function( parent ){
                 },
 
                 oldX,
+
+                mouseOffset = {x: 0},
         
                 keysPressed = [];
 
@@ -74,6 +78,7 @@ Physics.behavior('player', function( parent ){
             document.addEventListener('keyup', keyUp, false);
 
             this.keysPressed = keysPressed;
+            this.mouseOffset = mouseOffset;
             this.player = player;
         },
 
@@ -83,6 +88,9 @@ Physics.behavior('player', function( parent ){
             var ang = this.player.state.angular.pos,
                 player = this.player,
                 speed;
+
+            player.state.angular.pos += this.mouseOffset.x;
+                    console.log(this.mouseOffset.x); 
             
             if (player.shooting) {
                 if (player.shooting <= 1) {
